@@ -46,17 +46,17 @@ app.get("/", function(req, res){
 app.get("/scrape", function(req, res){
 
 	request("http://www.wdwmagic.com/news.htm", function(error, response, html){
-
+		var domain="http://www.wdwmagic.com";
 		var $= cheerio.load(html);
 		$(".clear-top-margin").each(function(i, element){
 			var result={};
 
 			result.title=$(this).children('a').text();
-			result.link=$(this).children('a').attr('href');
+			result.link=domain+$(this).children('a').attr('href');
 
 		var entry= new article(result);
 
-		entry.save(function(err.doc){
+		entry.save(function(err,doc){
 
 			if (err) {
 				console.log(err);
