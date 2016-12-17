@@ -8,34 +8,58 @@ $.getJSON('/articles', function(data){
 	}
 });
 
-$(document).on("click", "p", function(){
+// $(document).on("click", "p", function(){
 
-	$("#notes").empty();
+// 	$("#notes").empty();
 	
 
-	$.ajax({
+// 	$.ajax({
 
-		method: "GET",
-		url: "/articles/"+$(this).attr('data-id')
-	}).done(function(data){
+// 		method: "GET",
+// 		url: "/articles/"+$(this).attr('data-id')
+// 	}).done(function(data){
 
-		console.log(data);
+// 		// console.log(data);
 
-		$("#notes").append("<h2>"+data.title+"</h2>");
+// 		$("#notes").append("<h2>"+data.title+"</h2>");
 
-		$("#notes").append("<input id='titleinput' name='title'>");
+// 		$("#notes").append("<input id='titleinput' name='title'>");
 
-		$("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+// 		$("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
 
-		 $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-		if (data.note) {
-      console.log("here is data.note",data.note);
-        $("#titleinput").val(data.note.title);
+// 		 $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+// 		if (data.note) {
+//       console.log("here is data.note",data.note);
+//         $("#titleinput").val(data.note.title);
 
-        $("#bodyinput").val(data.note.body);
-      }
-	});
+//         $("#bodyinput").val(data.note.body);
+//       }
+// 	});
 
+// });
+
+$(document).on("click", "p", function() {
+  // empty notes in notes section
+  $("#notes").empty();
+  // save id from p tag
+  var thisId = $(this).attr("data-id");
+  // ajax call the Article
+  $.ajax({
+    method: "GET",
+    url: "/articles/" + $(this).attr("data-id")
+  })
+    // add note information to the page
+    .done(function(data) {
+      console.log("line 26", data);
+      // title of the article
+      $("#notes").append("<h2>" + data.title + "</h2>");
+      // textarea to add a new note body
+      $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
+      // button to submit a new note, with article id saved to it
+      $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+      // if there's a note already for that article, it will show up
+      $("#bodyinput").val(data.note[0].body);
+    });
 });
 
 $(document).on("click", "#savenote", function() {

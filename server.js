@@ -4,10 +4,10 @@ var logger=require('morgan');
 var mongoose=require('mongoose');
 var request=require('request');
 var cheerio=require('cheerio');
-var promise= require('bluebird');
+var Promise= require('bluebird');
 var note=require('./models/note.js');
 var article=require('./models/article.js');
-mongoose.Promise =promise;
+mongoose.Promise =Promise;
 
 var app= express();
 
