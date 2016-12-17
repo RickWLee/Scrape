@@ -72,5 +72,54 @@ app.get("/scrape", function(req, res){
 	res.send('Scrape Complete');
 });
 
+app.get ('/articles', function(req, res){
+	article.find({}, function(error, doc){
 
+		if (error){
 
+			console.log(error);
+		} else {
+			res.json(doc);
+		}
+	});
+});
+
+app.get('/articles/:id', function(req, res){
+
+	article.findOne({"_id": req.params.id})
+	.populate('note')
+	.exec(function(error,doc){
+		if (error){
+			console.log(error);
+		} else {
+			res.json(doc);
+		}
+	});
+
+});
+
+app.post('/articles/:id', function(req, res){
+	var newNote = new note(req.body);
+	newNote.save(function(error, doc){
+		if(error){
+			console.log(error);
+
+		} else{
+
+			article.findOneAndUpdate({ "_id":req.params.id}, {"note": doc._id})
+			.exec(function(err, doc){
+				if(err) {
+					console.log(err);
+				} else {
+					res.send (doc);
+				}
+			});
+		}
+	});
+
+});
+
+app.listen(3000, function(){
+console.log("App Running On Port 3000!");
+
+});
