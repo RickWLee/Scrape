@@ -38,7 +38,6 @@ db.once('open', function(){
 //Route
 
 app.get("/", function(req, res){
-
 	res.send(index.html);
 
 });
@@ -87,18 +86,20 @@ app.get ('/articles', function(req, res){
 app.get('/articles/:id', function(req, res){
 
 	article.findOne({"_id": req.params.id})
-	.populate('note')
+	.populate("note")
 	.exec(function(error,doc){
 		if (error){
 			console.log(error);
 		} else {
 			res.json(doc);
+
 		}
 	});
 
 });
 
 app.post('/articles/:id', function(req, res){
+
 	var newNote = new note(req.body);
 	newNote.save(function(error, doc){
 		if(error){
@@ -112,6 +113,7 @@ app.post('/articles/:id', function(req, res){
 					console.log(err);
 				} else {
 					res.send (doc);
+					console.log(doc);
 				}
 			});
 		}

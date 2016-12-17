@@ -8,15 +8,15 @@ $.getJSON('/articles', function(data){
 	}
 });
 
-$(document).on('click', 'p', function(){
+$(document).on("click", "p", function(){
 
 	$("#notes").empty();
-	var thisId= $(this).attr('data-id');
+	
 
 	$.ajax({
 
 		method: "GET",
-		url: "/articles/"+thisId
+		url: "/articles/"+$(this).attr('data-id')
 	}).done(function(data){
 
 		console.log(data);
@@ -29,7 +29,7 @@ $(document).on('click', 'p', function(){
 
 		 $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
 		if (data.note) {
-
+      console.log("here is data.note",data.note);
         $("#titleinput").val(data.note.title);
 
         $("#bodyinput").val(data.note.body);
