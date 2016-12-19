@@ -4,7 +4,7 @@ var bodyParser=require('body-parser');
 var logger=require('morgan');
 var mongoose=require('mongoose');
 //npm required for Notes and Article models
-var note=require('./models/Note.js');
+var Note=require('./models/Note.js');
 var Article=require('./models/Article.js');
 //npm reqired for Scraping
 var request=require('request');
