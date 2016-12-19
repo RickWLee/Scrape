@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var articleSchema = new Schema({
+var ArticleSchema = new Schema({
 
 	title: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	link : {
 		type: String,
@@ -20,6 +21,6 @@ var articleSchema = new Schema({
 
 });
 
-var article= mongoose.model("Article", articleSchema);
+var Article= mongoose.model("Article", ArticleSchema);
 
-module.exports = article;
+module.exports = Article;

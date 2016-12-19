@@ -1,12 +1,17 @@
+//Dependencies
 var express=require('express');
 var bodyParser=require('body-parser');
 var logger=require('morgan');
 var mongoose=require('mongoose');
+//npm required for Notes and Article models
+var note=require('./models/Note.js');
+var Article=require('./models/Article.js');
+//npm reqired for Scraping
 var request=require('request');
 var cheerio=require('cheerio');
+//Mongoose promise deprecate - used bluebird
 var Promise= require('bluebird');
-var note=require('./models/note.js');
-var article=require('./models/article.js');
+
 mongoose.Promise =Promise;
 
 var app= express();
@@ -18,12 +23,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static('public'));
 
-var databaseUrl="mongodb://localhost/news";
-if(process.env.MONGODB_URI){
-	mongoose.connect(process.env.MONGODB_URI);
-} else {
-	mongoose.connect(databaseUrl);
-}
+mongoose.connect("mongodb://localhost/news");
 
 var db=mongoose.connection;
 
@@ -44,16 +44,16 @@ app.get("/", function(req, res){
 
 app.get("/scrape", function(req, res){
 
-	request("http://www.wdwmagic.com/news.htm", function(error, response, html){
-		var domain="http://www.wdwmagic.com";
+	request("https://www.fencing.net/news/world/", function(error, response, html){
+		// var domain="https://www.fencing.net";
 		var $= cheerio.load(html);
-		$(".clear-top-margin").each(function(i, element){
+		$("h1").each(function(i, element){
 			var result={};
 
 			result.title=$(this).children('a').text();
-			result.link=domain+$(this).children('a').attr('href');
+			result.link=$(this).children('a').attr('href');
 
-		var entry= new article(result);
+		var entry= new Article(result);
 
 		entry.save(function(err,doc){
 
@@ -72,7 +72,7 @@ app.get("/scrape", function(req, res){
 });
 
 app.get ('/articles', function(req, res){
-	article.find({}, function(error, doc){
+	Article.find({}, function(error, doc){
 
 		if (error){
 
@@ -85,7 +85,7 @@ app.get ('/articles', function(req, res){
 
 app.get('/articles/:id', function(req, res){
 
-	article.findOne({"_id": req.params.id})
+	Article.findOne({"_id": req.params.id})
 	.populate("note")
 	.exec(function(error,doc){
 		if (error){
@@ -100,20 +100,20 @@ app.get('/articles/:id', function(req, res){
 
 app.post('/articles/:id', function(req, res){
 
-	var newNote = new note(req.body);
+	var newNote = new Note(req.body);
 	newNote.save(function(error, doc){
 		if(error){
 			console.log(error);
 
 		} else{
 
-			article.findOneAndUpdate({ "_id":req.params.id}, {"note": doc._id})
+			Article.findOneAndUpdate({ "_id":req.params.id}, {"note": doc._id})
 			.exec(function(err, doc){
 				if(err) {
 					console.log(err);
 				} else {
 					res.send (doc);
-					console.log(doc);
+					// console.log(doc);
 				}
 			});
 		}
